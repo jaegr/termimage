@@ -6,15 +6,15 @@ from cStringIO import StringIO
 from math import sqrt
 from optparse import OptionParser
 
-parser = OptionParser(description='Hej')
+parser = OptionParser(description='Takes an image URL and outputs it in the terminal using ANSI terminal colors')
 parser.add_option('--hires', action='store_true', dest='high_res', 
                     default=False, help='Output image is twice the resolution, but only uses half the colors.')
 parser.add_option('-c', '--contrast', action='store', dest='contrast',
                     type=float, default=1, metavar='VALUE', help='Set the contrast level. Default is 1.0.')
 parser.add_option('-b', '--black', action='store', dest='black_threshold',
-                    type=float, default=0, metavar='VALUE', help='Set the black threshold. Default is 0.')
+                    type=float, default=0.0, metavar='VALUE', help='Set the black threshold. Default is 0.0.')
 parser.add_option('-w', '--white', action='store', dest='white_threshold',
-                    type=float, default=0, metavar='VALUE', help='Set the white threshold. Default is 0.')
+                    type=float, default=0.0, metavar='VALUE', help='Set the white threshold. Default is 0.0.')
 
 (options, args) = parser.parse_args()
 
