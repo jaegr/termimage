@@ -1,5 +1,10 @@
 Dependency: PIL (http://www.pythonware.com/products/pil/).
 
+TODO:
+
+- Add IRC support
+- Add support for local files
+
 Usage: termimage.py [options]
 
 Takes an image URL and outputs it in the terminal using ANSI terminal colors
