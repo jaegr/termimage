@@ -1,0 +1,14 @@
+Usage: termimage.py [options]
+
+Takes an image URL and outputs it in the terminal using ANSI terminal colors
+
+Options:
+  -h, --help            show this help message and exit
+  --hires               Output image is twice the resolution, but only uses
+                        half the colors.
+  -c VALUE, --contrast=VALUE
+                        Set the contrast level. Default is 1.0.
+  -b VALUE, --black=VALUE
+                        Set the black threshold. Default is 0.0.
+  -w VALUE, --white=VALUE
+                        Set the white threshold. Default is 0.0.
