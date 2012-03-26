@@ -1,3 +1,5 @@
+Dependency: PIL (http://www.pythonware.com/products/pil/).
+
 Usage: termimage.py [options]
 
 Takes an image URL and outputs it in the terminal using ANSI terminal colors
