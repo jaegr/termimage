@@ -132,24 +132,6 @@ elif options.high_res:
 
 lab_values = [rgb_to_cielab(r,g,b) for (r,g,b) in rgb_values]
 
-index_to_irc = ['0',
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-                '6',
-                '7',
-                '8',
-                '9',
-                '10',
-                '11',
-                '12',
-                '13',
-                '14',
-                '15'
-                ]
-
 index_to_ansi_front = ['30',
                  '31',
                  '32',
@@ -240,13 +222,10 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
             else:
                 nearest = dE 
                 color_index = i
-    if options.irc:
-        return index_to_irc[color_index]
+    if back:
+        return index_to_ansi_back[color_index]
     else:
-        if back:
-            return index_to_ansi_back[color_index]
-        else:
-            return index_to_ansi_front[color_index]
+        return index_to_ansi_front[color_index]
 
 if __name__ == '__main__':
     import sys
