@@ -4,6 +4,8 @@ TODO:
 
 - Add IRC support
 - Add support for local files
+- Add custom size option
+
 
 Usage: termimage.py [options]
 
