@@ -177,10 +177,11 @@ def process_image(inp):
     final_image = []
     for x in range(0, im.size[1], options.step):
         if options.high_res:
-            final_image.append(u'▀'.join('\033[{0};{1}m'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])]))
+            line = u'▀'.join('\033[{0};{1}m'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])])
         else:
-            final_image.append(u' '.join('\033[{0}m'.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])]))
-        final_image[-1] += '\033[0m'
+            line = u' '.join('\033[{0}m'.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])])
+        line += '\033[0m'
+        final_image.append(line)
     return final_image
 
 
