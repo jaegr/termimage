@@ -15,6 +15,8 @@ parser.add_option('-b', '--black', action='store', dest='black_threshold',
                     type=float, default=0.0, metavar='VALUE', help='Set the black threshold. Default is 0.0.')
 parser.add_option('-w', '--white', action='store', dest='white_threshold',
                     type=float, default=0.0, metavar='VALUE', help='Set the white threshold. Default is 0.0.')
+parser.add_option('-s', '--step', action='store', dest='step',
+                    type=int, default=2, metavar='STEP')
 
 (options, args) = parser.parse_args()
 
@@ -173,7 +175,7 @@ def process_image(inp):
     im.thumbnail((120,100), Image.ANTIALIAS)
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
     final_image = []
-    for x in range(0, im.size[1], 2):
+    for x in range(0, im.size[1], options.step):
         if options.high_res:
             final_image.append(u'▀'.join('\033[{0};{1}m'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])]))
         else:
