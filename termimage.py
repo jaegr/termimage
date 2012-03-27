@@ -17,6 +17,8 @@ parser.add_option('-w', '--white', action='store', dest='white_threshold',
                     type=float, default=0.0, metavar='VALUE', help='Set the white threshold. Default is 0.0.')
 parser.add_option('-s', '--step', action='store', dest='step',
                     type=int, default=2, metavar='STEP')
+parser.add_options('-i', '--irc', action='store_true', dest='irc',
+                    default=False, help='Output image using IRC color codes.')
 
 (options, args) = parser.parse_args()
 
@@ -123,7 +125,9 @@ rgb_values = [
               (255,255,255)
               ]
 
-if options.high_res:
+if options.irc:
+    rgb_values = irc_rgb_values
+elif options.high_res:
     rgb_values = rgb_values[:8]
 
 lab_values = [rgb_to_cielab(r,g,b) for (r,g,b) in rgb_values]
@@ -176,11 +180,18 @@ def process_image(inp):
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
     final_image = []
     for x in range(0, im.size[1], options.step):
-        if options.high_res:
-            line = u'▀'.join('\033[{0};{1}m'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])])
+        if options.irc:
+            if options.high_res:
+                line = u'▀'.join('\x03{0},{1}'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1)) for i in range(im.size[0])])
+            else:
+                line = u' '.join('\x03{0},{0}'.format(k) for k in [(get_nearest_rgb(im, i, x)) for i in range(im.size[0])])
+            line += '\033[0m'
         else:
-            line = u' '.join('\033[{0}m'.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])])
-        line += '\033[0m'
+            if options.high_res:
+                line = u'▀'.join('\033[{0};{1}m'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])])
+            else:
+                line = u' '.join('\033[{0}m'.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])])
+            line += '\033[0m'
         final_image.append(line)
     return final_image
 
