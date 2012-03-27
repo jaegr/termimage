@@ -102,7 +102,7 @@ rgb_values = [
               (255,255,255)
               ]
 
-if not options.high_res:
+if options.high_res:
     rgb_values = rgb_values[:8]
 
 lab_values = [rgb_to_cielab(r,g,b) for (r,g,b) in rgb_values]
