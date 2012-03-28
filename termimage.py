@@ -200,13 +200,13 @@ def process_image(inp):
     for x in range(0, im.size[1], options.step):
         if options.irc:
             if options.high_res:
-                line = u'▀'.join('\x03{0},{1}'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1)) for i in range(im.size[0])])
+                line = u'\u2580'.join('\x03{0},{1}'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1)) for i in range(im.size[0])])
             else:
                 line = u' '.join('\x03{0},{0}'.format(k) for k in [(get_nearest_rgb(im, i, x)) for i in range(im.size[0])])
             line += '\033[0m'
         else:
             if options.high_res:
-                line = u'▀'.join('\033[{0};{1}m'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])])
+                line = u'\u2580'.join('\033[{0};{1}m'.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])])
             else:
                 line = u' '.join('\033[{0}m'.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])])
             line += '\033[0m'
