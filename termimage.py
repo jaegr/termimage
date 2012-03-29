@@ -437,7 +437,10 @@ index_to_ansi_back = [
 
 def get_image():
     if options.filename:
-        fs = open(options.filename)
+        try:
+            fs = open(options.filename)
+        except IOError as e:
+            sys.exit(e)
     else:
         headers = {'User-Agent' : 'pjaeBot'}
         request = urllib2.Request(args[0], None, headers)
@@ -448,9 +451,15 @@ def get_image():
 def process_image():
     im = get_image()
     im = im.convert('RGB')
-    im.thumbnail((120,100), Image.ANTIALIAS)
+    width = im.size[0]
+    height = im.size[1]
+    ratio = get_ratio(width, height)
+    resize_width = int(width * ratio + 0.5)
+    resize_height = int(height * ratio + 0.5)
+    im = im.resize((resize_width,resize_height), Image.ANTIALIAS)
+#    im.thumbnail((120,100), Image.ANTIALIAS)
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
-    final_image = []
+#    final_image = []
     template = get_template()
     for x in range(0, im.size[1], options.step):
         if options.high_res:
@@ -459,8 +468,14 @@ def process_image():
             line = u' '.join(template.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])])
         if not options.irc:
             line += '\033[0m'
-        final_image.append(line)
-    return final_image
+        print line
+#        final_image.append(line)
+#    return final_image
+
+def get_ratio(width, height):
+    max_width = 120.
+    max_height = 120.
+    return min(max_width/width, max_height/height)
 
 def get_template():
     if options.irc:
@@ -519,5 +534,6 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
 
 if __name__ == '__main__':
     import sys
-    for i in process_image():
-        print i.encode('utf8')
+    process_image()
+#    for i in process_image():
+#        print i.encode('utf8')
