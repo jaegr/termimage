@@ -474,8 +474,8 @@ def get_template():
 
 
 def get_nearest_rgb(im, x, y, back=False): #deprecated
-    nearest = 10000
-    current = 1000
+    nearest = None
+#    current = 1000
     color_index = -1
     try:
         r1, g1, b1 = im.getpixel((x, y))
@@ -493,7 +493,7 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
         dB = b1 - b2
         dH = dA**2 + dB ** 2 - dC **2
         dE = sqrt((dL/1) ** 2 + (dC/(1 + 0.045 * c1)) ** 2 + (dH/(1+0.015*c2)**2) )
-        if dE < nearest:
+        if dE < nearest or not nearest:
             if (i == 0 or i == 15) and dE < options.black_threshold or (i == 7 or i == 15) and dE < options.white_threshold:
                 pass
             else:
