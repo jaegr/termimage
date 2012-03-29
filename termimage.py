@@ -446,7 +446,7 @@ def process_image(inp):
     template = get_template()
     for x in range(0, im.size[1], options.step):
         if options.high_res:
-            line = u'\u2580'.join(template.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1)) for i in range(im.size[0])])
+            line = u'\u2580'.join(template.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])])
         else:
             line = u' '.join(template.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])])
         if not options.irc:
