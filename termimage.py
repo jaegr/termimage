@@ -20,6 +20,8 @@ parser.add_option('-i', '--irc',  action='store_true', dest='irc',
                     default=False, help='Output image using IRC color codes.')
 parser.add_option('-x', '--xterm', action='store_true', dest='xterm',
                     default=False, help='Uses xterm 256 colors.')
+parser.add_option('-l', '--local', action='store', dest='filename',
+                    help='Path to local file.')
 
 (options, args) = parser.parse_args()
 
@@ -433,12 +435,18 @@ index_to_ansi_back = [
                  '47;1'
                  ]
 
+def get_image():
+    if options.filename:
+        fs = open(options.filename)
+    else:
+        headers = {'User-Agent' : 'pjaeBot'}
+        request = urllib2.Request(args[0], None, headers)
+        fs = StringIO(urllib2.urlopen(request).read())
+    return Image.open(fs)
+       
 
-def process_image(inp):
-    headers = {'User-Agent' : 'pjaeBot'}
-    request = urllib2.Request(inp, None, headers)
-    buf = StringIO(urllib2.urlopen(request).read())
-    im = Image.open(buf)
+def process_image():
+    im = get_image()
     im = im.convert('RGB')
     im.thumbnail((120,100), Image.ANTIALIAS)
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
@@ -511,5 +519,5 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
 
 if __name__ == '__main__':
     import sys
-    for i in process_image(args[0]):
+    for i in process_image():
         print i.encode('utf8')
