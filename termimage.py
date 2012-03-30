@@ -457,20 +457,36 @@ def process_image():
     resize_width = int(width * ratio + 0.5)
     resize_height = int(height * ratio + 0.5)
     im = im.resize((resize_width,resize_height), Image.ANTIALIAS)
-#    im.thumbnail((120,100), Image.ANTIALIAS)
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
-#    final_image = []
     template = get_template()
-    for x in range(0, im.size[1], options.step):
-        if options.high_res:
-            line = u'\u2580'.join(template.format(k,j) for k, j in [(get_nearest_rgb(im, i, x), get_nearest_rgb(im, i, x+1, back=True)) for i in range(im.size[0])])
-        else:
-            line = u' '.join(template.format(k) for k in [(get_nearest_rgb(im, i, x, back=True)) for i in range(im.size[0])])
+    line = ''
+    prev_fore = None
+    prev_back = None
+    fore = None
+    back = None
+    for y in range(0, resize_height, options.step):
+        for x in range(resize_width):
+            if options.high_res:
+                fore, back = (get_nearest_rgb(im, x, y), get_nearest_rgb(im, x, y+1, back=True))
+                if prev_fore == fore and prev_back == back and x != 0:
+                    line += u'\u2580'
+                elif prev_fore == fore and x != 0:
+                    line += template['back'].format(fore, back) + u'\u2580' 
+                elif prev_back == back and x != 0:
+                    line += template['fore'].format(fore, back) + u'\u2580' 
+                else:
+                    line += template['both'].format(fore, back) + u'\u2580' 
+            else:
+                back = get_nearest_rgb(im, x, y, back=True)
+                if prev_back == back and x != 0:
+                    line += u' '
+                else:
+                    line += template.format(back) + u' '
+            prev_fore, prev_back = fore, back
         if not options.irc:
             line += '\033[0m'
-        print line
-#        final_image.append(line)
-#    return final_image
+        print line.encode('utf8')
+        line = ''
 
 def get_ratio(width, height):
     max_width = 120.
@@ -480,21 +496,19 @@ def get_ratio(width, height):
 def get_template():
     if options.irc:
         if options.high_res:
-            return '\x03{0},{1}'
+            return {'both': '\x03{0},{1}', 'fore': '\x03{0}', 'back': '\x03,{1}'}
         else:
             return '\x03{0},{0}'
     elif options.xterm:
         if options.high_res:
-            return '\033[38;5;{0}m\033[48;5;{1}m'
+            return {'both': '\033[38;5;{0}m\033[48;5;{1}m', 'fore': '\033[38;5;{0}m', 'back': '\033[48;5;{1}m'}
         else:   
             return '\033[48;5;{0}m'
     else:
         if options.high_res:
-            return '\033[{0};{1}m'
+            return {'both': '\033[{0};{1}m', 'fore': '\033[{0}m', 'back': '\033[{1}m'}
         else:
             return '\033[{0}m'
-
-
 
 def get_nearest_rgb(im, x, y, back=False): #deprecated
     nearest = None
