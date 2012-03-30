@@ -4,6 +4,7 @@ import urllib2
 from cStringIO import StringIO
 from math import sqrt
 from optparse import OptionParser
+import json
 
 parser = OptionParser(description='''Takes an image URL and outputs it in the terminal using ANSI terminal colors. Also contains
                                     options for xterm colors and IRC output.''')
@@ -31,6 +32,8 @@ parser.add_option('--width', action='store', dest='width',
                                                                     is always preserved. Default is 100.''')
 parser.add_option('-m', '--mode', action='store', dest='mode', type='choice', default='antialias', metavar='MODE',
                     choices=['antialias', 'nearest', 'bicubic', 'bilinear'], help='Sets the resize mode. Default is antialias.')
+parser.add_option('-g', '--google', action='store', dest='google', metavar='QUERY', 
+                    help='Search Google for an image matching the search query.')
 
 (options, args) = parser.parse_args()
 
@@ -451,8 +454,12 @@ def get_image():
         except IOError as e:
             sys.exit(e)
     else:
+        if options.google:
+            url = google()
+        else:
+            url = args[0]
         headers = {'User-Agent' : 'pjaeBot'}
-        request = urllib2.Request(args[0], None, headers)
+        request = urllib2.Request(url, None, headers)
         fs = StringIO(urllib2.urlopen(request).read())
     return Image.open(fs)
 
@@ -566,6 +573,18 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
             return index_to_ansi_back[color_index]
         else:
             return index_to_ansi_front[color_index]
+
+def google():
+    uri = 'http://ajax.googleapis.com/ajax/services/search/images'
+    query = options.google.decode('utf8')
+    args = '?v=1.0&safe=off&q=' + urllib2.quote(query.encode('utf-8'))
+    raw = urllib2.urlopen(uri + args)
+    json_object = json.load(raw)
+    try:
+        url = json_object['responseData']['results'][0]['unescapedUrl']
+        return url
+    except IndexError:
+        sys.exit('Something went wrong with the google search!')
 
 if __name__ == '__main__':
     import sys
