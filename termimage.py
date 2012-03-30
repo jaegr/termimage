@@ -29,6 +29,8 @@ parser.add_option('--height', action='store', dest='height',
 parser.add_option('--width', action='store', dest='width',
                     type=float, default=100.0, metavar='VALUE', help='''Desired width of the output. Aspect ratio
                                                                     is always preserved. Default is 100.''')
+parser.add_option('-m', '--mode', action='store', dest='mode', type='choice', default='antialias', metavar='MODE',
+                    choices=['antialias', 'nearest', 'bicubic', 'bilinear'], help='Sets the resize mode. Default is antialias.')
 
 (options, args) = parser.parse_args()
 
@@ -453,6 +455,16 @@ def get_image():
         request = urllib2.Request(args[0], None, headers)
         fs = StringIO(urllib2.urlopen(request).read())
     return Image.open(fs)
+
+def get_mode():
+    if options.mode == 'antialias':
+        return Image.ANTIALIAS
+    elif options.mode == 'bicubic':
+        return Image.BICUBIC
+    elif options.mode == 'bilinear':
+        return Image.BILINEAR
+    else:
+        return Image.NEAREST
        
 
 def process_image():
@@ -463,7 +475,8 @@ def process_image():
     ratio = get_ratio(width, height)
     resize_width = int(width * ratio + 0.5)
     resize_height = int(height * ratio + 0.5)
-    im = im.resize((resize_width,resize_height), Image.ANTIALIAS)
+    mode = get_mode()
+    im = im.resize((resize_width,resize_height), mode)
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
     template = get_template()
     line = ''
@@ -517,6 +530,7 @@ def get_template():
         else:
             return '\033[{0}m'
 
+
 def get_nearest_rgb(im, x, y, back=False): #deprecated
     nearest = None
 #    current = 1000
@@ -556,5 +570,3 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
 if __name__ == '__main__':
     import sys
     process_image()
-#    for i in process_image():
-#        print i.encode('utf8')
