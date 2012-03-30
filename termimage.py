@@ -5,7 +5,8 @@ from cStringIO import StringIO
 from math import sqrt
 from optparse import OptionParser
 
-parser = OptionParser(description='Takes an image URL and outputs it in the terminal using ANSI terminal colors')
+parser = OptionParser(description='''Takes an image URL and outputs it in the terminal using ANSI terminal colors. Also contains
+                                    options for xterm colors and IRC output.''')
 parser.add_option('--hires', action='store_true', dest='high_res', 
                     default=False, help='Output image is twice the resolution, but only uses half the colors.')
 parser.add_option('-c', '--contrast', action='store', dest='contrast',
