@@ -37,5 +37,5 @@ Dependency: PIL (http://www.pythonware.com/products/pil/).
 
 # TODO:
 
-* ???
+* Comment code
 
