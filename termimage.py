@@ -22,6 +22,12 @@ parser.add_option('-x', '--xterm', action='store_true', dest='xterm',
                     default=False, help='Uses xterm 256 colors.')
 parser.add_option('-l', '--local', action='store', dest='filename',
                     help='Path to local file.')
+parser.add_option('--height', action='store', dest='height',
+                    type=float, default=100.0, metavar='VALUE', help='''Desired height of the output. Aspect ratio
+                                                                    is always preserved. Default is 100.''')
+parser.add_option('--width', action='store', dest='width',
+                    type=float, default=100.0, metavar='VALUE', help='''Desired width of the output. Aspect ratio
+                                                                    is always preserved. Default is 100.''')
 
 (options, args) = parser.parse_args()
 
@@ -489,8 +495,8 @@ def process_image():
         line = ''
 
 def get_ratio(width, height):
-    max_width = 120.
-    max_height = 120.
+    max_width = options.width
+    max_height = options.height
     return min(max_width/width, max_height/height)
 
 def get_template():
