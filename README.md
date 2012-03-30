@@ -6,7 +6,7 @@ TODO:
 
 Screenshot:
 
-rc="http://i.imgur.com/6u2lY.png" alt="termimage" title="termimage" />
+<img src="http://i.imgur.com/6u2lY.png" alt="termimage" title="termimage" />
 
 Usage: termimage.py [options]
 
