@@ -473,10 +473,23 @@ def get_mode():
     else:
         return Image.NEAREST
        
+def quantize(im):
+    pal_im = im.convert('P')
+    vals = []
+    for val in rgb_values:
+        for n in val:
+            vals.append(n)
+    pal_im.putpalette(vals)
+#    im = im.convert('RGB')
+    im = im.quantize(palette=pal_im)
+    im = im.convert('RGB')
+    return im
+    
 
 def process_image():
     im = get_image()
     im = im.convert('RGB')
+#    im = quantize(im)
     width = im.size[0]
     height = im.size[1]
     ratio = get_ratio(width, height)
@@ -484,6 +497,8 @@ def process_image():
     resize_height = int(height * ratio + 0.5)
     mode = get_mode()
     im = im.resize((resize_width,resize_height), mode)
+#    pim = im.convert('P', palette=Image.ADAPTIVE, colors=256)
+#    im = pim.convert('RGB')
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
     template = get_template()
     line = ''
