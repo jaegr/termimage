@@ -34,6 +34,8 @@ parser.add_option('-m', '--mode', action='store', dest='mode', type='choice', de
                     choices=['antialias', 'nearest', 'bicubic', 'bilinear'], help='Sets the resize mode. Default is antialias.')
 parser.add_option('-g', '--google', action='store', dest='google', metavar='QUERY', 
                     help='Search Google for an image matching the search query.')
+parser.add_option('-d', '--dither', action='store_true', dest='dither', default=False,
+                    help='Enable dithering. Default is off.')
 
 (options, args) = parser.parse_args()
 
@@ -479,8 +481,9 @@ def process_image():
     resize_height = int(height * ratio + 0.5)
     mode = get_mode()
     im = im.resize((resize_width,resize_height), mode)
-#    pim = im.convert('P', palette=Image.ADAPTIVE, colors=256)
-#    im = pim.convert('RGB')
+    if options.dither:
+        pim = im.convert('P')
+        im = pim.convert('RGB')
     im = ImageEnhance.Contrast(im).enhance(options.contrast)
     template = get_template()
     line = ''
