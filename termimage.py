@@ -392,24 +392,6 @@ if options.xterm:
 
 lab_values = [rgb_to_cielab(r,g,b) for (r,g,b) in rgb_values]
 
-index_to_irc = ['0',
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-                '6',
-                '7',
-                '8',
-                '9',
-                '10',
-                '11',
-                '12',
-                '13',
-                '14',
-                '15'
-                ]
-
 index_to_ansi_front = ['30',
                  '31',
                  '32',
@@ -555,14 +537,12 @@ def get_template():
 
 def get_nearest_rgb(im, x, y, back=False): #deprecated
     nearest = None
-#    current = 1000
-    color_index = -1
     try:
         r1, g1, b1 = im.getpixel((x, y))
     except IndexError:
         r1 = g1 = b1 = 0
     l1, a1, b1 = rgb_to_cielab(r1,g1,b1)
-    for i, (l2, a2, b2) in enumerate(lab_values):
+    for index, (l2, a2, b2) in enumerate(lab_values):
 #        current = sqrt(((r2-r1)*0.3)**2 + ((g2-g1)*0.59)**2 + ((b2-b1)*0.11)**2)
 #        current = sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2)
         dL = l1 - l2
@@ -573,15 +553,13 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
         dB = b1 - b2
         dH = dA**2 + dB ** 2 - dC **2
         dE = sqrt((dL/1) ** 2 + (dC/(1 + 0.045 * c1)) ** 2 + (dH/(1+0.015*c2)**2) )
-        if dE < nearest or not nearest:
-            if (i == 0 or i == 15) and dE < options.black_threshold or (i == 7 or i == 15) and dE < options.white_threshold:
-                pass
-            else:
-                nearest = dE 
-                color_index = i
-    if options.irc:
-        return index_to_irc[color_index]
-    elif options.xterm:
+        if dE < nearest or nearest is None:
+#            if (i == 0 or i == 15) and dE < options.black_threshold or (i == 7 or i == 15) and dE < options.white_threshold:
+#                pass
+#            else:
+            nearest = dE 
+            color_index = index
+    if options.irc or options.xterm:
         return color_index
     else:
         if back:
