@@ -95,6 +95,9 @@ index_to_ansi_back = [
                  ]
 
 def get_image():
+    '''
+    Retrieves the image file from the given input method; local file, google search or url
+    '''
     if options.filename:
         try:
             fs = open(options.filename)
@@ -185,6 +188,9 @@ def get_ratio(width, height):
     return min(max_width/width, max_height/height)
 
 def get_template():
+    '''
+    Get the string template based on the options
+    '''
     if options.irc:
         if options.high_res:
             return {'both': '\x03{0},{1}', 'fore': '\x03{0}', 'back': '\x03,{1}'}
@@ -235,6 +241,9 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
             return index_to_ansi_front[color_index]
 
 def google():
+    '''
+    Returns the first result from Google Images when searching for the user provided query string
+    '''
     uri = 'http://ajax.googleapis.com/ajax/services/search/images'
     query = options.google.decode('utf8')
     args = '?v=1.0&safe=off&q=' + urllib2.quote(query.encode('utf-8'))
