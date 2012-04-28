@@ -13,7 +13,7 @@ parser = OptionParser(description='''Takes an image URL and outputs it in the te
 parser.add_option('--hires', action='store_true', dest='high_res', 
                     default=False, help='Output image is twice the resolution, but only uses half the colors.')
 parser.add_option('-c', '--contrast', action='store', dest='contrast',
-                    type=float, default=1, metavar='VALUE', help='Set the contrast level. Default is 1.0.')
+                    type=float, metavar='VALUE', help='Set the contrast level. Default is 1.0.')
 parser.add_option('-b', '--black', action='store', dest='black_threshold',
                     type=float, default=0.0, metavar='VALUE', help='Set the black threshold. Default is 0.0.')
 parser.add_option('-w', '--white', action='store', dest='white_threshold',
@@ -111,11 +111,11 @@ def get_image():
     return Image.open(fs)
 
 def get_mode():
-    if options.mode == 'antialias':
+    if options.mode.lower() == 'antialias':
         return Image.ANTIALIAS
-    elif options.mode == 'bicubic':
+    elif options.mode.lower() == 'bicubic':
         return Image.BICUBIC
-    elif options.mode == 'bilinear':
+    elif options.mode.lower() == 'bilinear':
         return Image.BILINEAR
     else:
         return Image.NEAREST
@@ -147,7 +147,8 @@ def process_image():
     if options.dither:
         pim = im.convert('P')
         im = pim.convert('RGB')
-    im = ImageEnhance.Contrast(im).enhance(options.contrast)
+    if options.contrast:
+        im = ImageEnhance.Contrast(im).enhance(options.contrast)
     template = get_template()
     line = ''
     prev_fore = None
@@ -209,8 +210,6 @@ def get_nearest_rgb(im, x, y, back=False): #deprecated
         r1 = g1 = b1 = 0
     l1, a1, b1 = color_conversions.rgb_to_cielab(r1,g1,b1)
     for index, (l2, a2, b2) in enumerate(lab_values):
-#        current = sqrt(((r2-r1)*0.3)**2 + ((g2-g1)*0.59)**2 + ((b2-b1)*0.11)**2)
-#        current = sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2)
         dL = l1 - l2
         c1 = sqrt(a1**2 + b1**2)
         c2 = sqrt(a2**2 + b2**2)
@@ -248,5 +247,4 @@ def google():
         sys.exit('Something went wrong with the google search!')
 
 if __name__ == '__main__':
-    import sys
     process_image()
