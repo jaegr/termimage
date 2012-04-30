@@ -42,7 +42,7 @@ parser.add_option('-d', '--dither', action='store_true', dest='dither', default=
 parser.add_option('--bw', action='store_true', dest='black_and_white', default=False,
                   help='Enable black and white')
 
-    (options, args) = parser.parse_args()
+(options, args) = parser.parse_args()
 
 if options.irc:
     rgb_values = rgb_values.irc_rgb_values
@@ -157,12 +157,9 @@ def process_image():
     if options.contrast:
         im = ImageEnhance.Contrast(im).enhance(options.contrast)
     template = get_template()
-    line = ''
-    prev_fore = None
-    prev_back = None
-    fore = None
-    back = None
+    prev_fore, prev_back, fore, back = None
     for y in range(0, resize_height, options.step):
+        line = ''
         for x in range(resize_width):
             if options.high_res:
                 fore, back = (get_nearest_rgb(im, x, y), get_nearest_rgb(im, x, y + 1, back=True))
@@ -184,7 +181,6 @@ def process_image():
         if not options.irc:
             line += '\033[0m'
         print line.encode('utf8')
-        line = ''
 
 
 def get_ratio(width, height):
