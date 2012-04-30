@@ -157,7 +157,7 @@ def process_image():
     if options.contrast:
         im = ImageEnhance.Contrast(im).enhance(options.contrast)
     template = get_template()
-    prev_fore, prev_back, fore, back = None
+    prev_fore = prev_back = fore = back = None
     for y in range(0, resize_height, options.step):
         line = ''
         for x in range(resize_width):
