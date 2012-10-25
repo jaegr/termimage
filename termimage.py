@@ -7,6 +7,7 @@ from cStringIO import StringIO
 from math import sqrt
 from optparse import OptionParser
 import json
+import sys
 
 parser = OptionParser(description='''Takes an image URL and outputs it in the terminal using ANSI terminal colors. Also contains
                                     options for xterm colors and IRC output.''')
